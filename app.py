@@ -298,7 +298,7 @@ class ACEestApp:
         columns = ("date","type","duration","notes")
         self.tree_workouts = ttk.Treeview(self.tab_workouts, columns=columns, show="headings")
         for c in columns:
-            self.tree_workouts.heading(c,c.title())
+            self.tree_workouts.heading(c, text=c.title())
             self.tree_workouts.column(c,width=150)
         self.tree_workouts.pack(fill="both",expand=True)
         ttk.Button(self.tab_workouts,text="Add Workout",command=self.add_workout).pack(pady=5)
