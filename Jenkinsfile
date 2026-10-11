@@ -19,8 +19,8 @@ pipeline {
 
         stage('Set Up Python Environment') {
             steps {
-                echo 'Creating Python 3.11 virtual environment'
-                sh 'python3.11 -m venv .venv'
+                echo 'Creating Python virtual environment using python3'
+                sh 'python3 -m venv .venv'
                 echo 'Python virtual environment created'
             }
         }

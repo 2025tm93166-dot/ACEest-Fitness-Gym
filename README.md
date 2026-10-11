@@ -132,7 +132,7 @@ This ensures every code change is validated automatically before merge.
 The root-level `Jenkinsfile` defines a Declarative Pipeline with these stages:
 
 1. **Checkout** the configured SCM revision.
-2. **Set Up Python Environment** by creating a Python 3.11 virtual environment.
+2. **Set Up Python Environment** by creating a virtual environment with `python3`.
 3. **Build** by upgrading pip and installing dependencies from `requirements.txt`.
 4. **Run Tests** with pytest and generate `reports/pytest.xml`.
 5. **Build Docker Image** as `aceest-fitness`.
@@ -141,11 +141,11 @@ Jenkins polls the configured SCM every minute (`* * * * *`) and triggers the
 pipeline when it detects changes. Progress messages are printed as the stages
 run, and the JUnit test report is published even if a test fails.
 
-To run it, configure a Linux Jenkins agent with Python 3.11 and Docker installed
-and grant the agent permission to access the Docker daemon. Ensure the Jenkins
-Git and JUnit plugins are installed. Create a Pipeline job pointing to this
-repository and select **Pipeline script from SCM**; Jenkins will discover the
-`Jenkinsfile` from the repository root.
+To run it, configure a Linux Jenkins agent with Python 3.11 or newer available
+as `python3`, plus Docker, and grant the agent permission to access the Docker
+daemon. Ensure the Jenkins Git and JUnit plugins are installed. Create a
+Pipeline job pointing to this repository and select **Pipeline script from
+SCM**; Jenkins will discover the `Jenkinsfile` from the repository root.
 
 ## Notes
 
