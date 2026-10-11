@@ -19,6 +19,7 @@ ACEest Fitness Gym is a desktop-based fitness management application built with 
 - `tests/test_app.py` — Pytest suite covering critical app behavior
 - `Dockerfile` — container setup for local or CI execution
 - `.github/workflows/ci.yml` — GitHub Actions automation for tests and Docker build
+- `Jenkinsfile` — Jenkins pipeline for dependency installation, tests, and Docker image build
 - `requirements.txt` — Python dependencies
 
 ## Local Setup
@@ -126,47 +127,25 @@ The workflow:
 
 This ensures every code change is validated automatically before merge.
 
-### Jenkins integration logic
+### Jenkins pipeline
 
-A Jenkins pipeline can be added to perform similar validation in an on-premise or self-hosted environment. The typical Jenkins flow would be:
+The root-level `Jenkinsfile` defines a Declarative Pipeline with these stages:
 
-1. Pull the source code from Git.
-2. Set up the Python environment.
-3. Install dependencies.
-4. Run the test suite.
-5. Build the Docker image.
-6. Optionally deploy or archive the image.
+1. **Checkout** the configured SCM revision.
+2. **Set Up Python Environment** by creating a Python 3.11 virtual environment.
+3. **Build** by upgrading pip and installing dependencies from `requirements.txt`.
+4. **Run Tests** with pytest and generate `reports/pytest.xml`.
+5. **Build Docker Image** as `aceest-fitness`.
 
-Example Jenkins pipeline steps:
+Jenkins polls the configured SCM every minute (`* * * * *`) and triggers the
+pipeline when it detects changes. Progress messages are printed as the stages
+run, and the JUnit test report is published even if a test fails.
 
-```groovy
-pipeline {
-    agent any
-    stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/your-repo/ACEest-Fitness-Gym.git'
-            }
-        }
-        stage('Install Dependencies') {
-            steps {
-                sh 'python -m pip install --upgrade pip'
-                sh 'python -m pip install -r requirements.txt'
-            }
-        }
-        stage('Run Tests') {
-            steps {
-                sh 'python -m pytest tests/test_app.py -q'
-            }
-        }
-        stage('Build Docker Image') {
-            steps {
-                sh 'docker build -t aceest-fitness .' 
-            }
-        }
-    }
-}
-```
+To run it, configure a Linux Jenkins agent with Python 3.11 and Docker installed
+and grant the agent permission to access the Docker daemon. Ensure the Jenkins
+Git and JUnit plugins are installed. Create a Pipeline job pointing to this
+repository and select **Pipeline script from SCM**; Jenkins will discover the
+`Jenkinsfile` from the repository root.
 
 ## Notes
 
